@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>Nox Manhwa Reader</title>
+<style>
+body { margin:0; background:#111; color:#fff; font-family:sans-serif; }
+#reader { max-width:800px; margin:20px auto; text-align:center; }
+img { max-width:100%; display:block; margin:10px auto; }
+.controls { position:fixed; bottom:10px; left:50%; transform:translateX(-50%); background:#222; padding:10px; border-radius:8px; }
+button { margin:5px; padding:8px 16px; }
+</style>
+</head>
+<body>
+<h1 style='text-align:center;'>Nox Manhwa Reader</h1>
+<div id='reader'>
+<input type='file' id='upload' multiple accept='image/*' style='display:block;margin:20px auto;'>
+<div id='pages'></div>
+</div>
+<div class='controls'>
+<button onclick='prev()'>← Previous</button>
+<button onclick='next()'>Next →</button>
+<button onclick='toggleFullscreen()'>Fullscreen</button>
+</div>
+<script>
+let currentPage = 0;
+let pages = [];
+const pagesDiv = document.getElementById('pages');
+const upload = document.getElementById('upload');
+
+upload.addEventListener('change', e => {
+  pages = Array.from(e.target.files).sort((a,b) => a.name.localeCompare(b.name));
+  showPage(0);
+});
+
+function showPage(index) {
+  if (index < 0 || index >= pages.length) return;
+  currentPage = index;
+  pagesDiv.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = URL.createObjectURL(pages[index]);
+  pagesDiv.appendChild(img);
+}
+
+function next() { showPage(currentPage + 1); }
+function prev() { showPage(currentPage - 1); }
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft') prev();
+});
+</script>
+</body>
+</html>
